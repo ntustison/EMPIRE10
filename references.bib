@@ -1,0 +1,88 @@
+%% This BibTeX bibliography file was created using BibDesk.
+%% http://bibdesk.sourceforge.net/
+
+
+%% Created for Nick Tustison at 2013-12-25 18:28:10 -0500 
+
+
+%% Saved with string encoding Unicode (UTF-8) 
+
+
+
+@inproceedings{song2010,
+	Author = {Gang Song and Nicholas J. Tustison and Brian B. Avants and James C. Gee},
+	Booktitle = {Medical Image Analysis for the Clinic: A Grand Challenge},
+	Date-Added = {2013-12-25 21:47:59 +0000},
+	Date-Modified = {2013-12-25 21:49:26 +0000},
+	Pages = {23--32},
+	Title = {Lung CT image registration using diffeomorphic transformation models},
+	Year = {2010}}
+
+@article{tustison2009,
+	Abstract = {Previous contributions to both the research and open source software communities detailed a generalization of a fast scalar field fitting technique for cubic B-splines based on the work originally proposed by Lee . One advantage of our proposed generalized B-spline fitting approach is its immediate application to a class of nonrigid registration techniques frequently employed in medical image analysis. Specifically, these registration techniques fall under the rubric of free-form deformation (FFD) approaches in which the object to be registered is embedded within a B-spline object. The deformation of the B-spline object describes the transformation of the image registration solution. Representative of this class of techniques, and often cited within the relevant community, is the formulation of Rueckert who employed cubic splines with normalized mutual information to study breast deformation. Similar techniques from various groups provided incremental novelty in the form of disparate explicit regularization terms, as well as the employment of various image metrics and tailored optimization methods. For several algorithms, the underlying gradient-based optimization retained the essential characteristics of Rueckert's original contribution. The contribution which we provide in this paper is two-fold: 1) the observation that the generic FFD framework is intrinsically susceptible to problematic energy topographies and 2) that the standard gradient used in FFD image registration can be modified to a well-understood preconditioned form which substantially improves performance. This is demonstrated with theoretical discussion and comparative evaluation experimentation.},
+	Author = {Tustison, Nicholas J and Avants, Brian B and Gee, James C},
+	Date-Added = {2013-12-25 14:03:58 +0000},
+	Date-Modified = {2013-12-25 14:04:11 +0000},
+	Doi = {10.1109/TIP.2008.2010072},
+	Journal = {IEEE Trans Image Process},
+	Journal-Full = {IEEE transactions on image processing : a publication of the IEEE Signal Processing Society},
+	Mesh = {Algorithms; Artificial Intelligence; Brain; Humans; Image Enhancement; Image Interpretation, Computer-Assisted; Imaging, Three-Dimensional; Magnetic Resonance Imaging; Pattern Recognition, Automated; Reproducibility of Results; Sensitivity and Specificity; Subtraction Technique},
+	Month = {Mar},
+	Number = {3},
+	Pages = {624-35},
+	Pmid = {19171516},
+	Pst = {ppublish},
+	Title = {Directly manipulated free-form deformation image registration},
+	Volume = {18},
+	Year = {2009},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1109/TIP.2008.2010072}}
+
+@article{tustison2013,
+	Author = {Nicholas J. Tustison and Brian B. Avants},
+	Date-Added = {2013-12-25 14:03:48 +0000},
+	Date-Modified = {2013-12-25 14:03:48 +0000},
+	Journal = {Front. Neuroinform.},
+	Number = {39},
+	Title = {Explicit {B}-spline regularization in diffeomorphic image registration},
+	Volume = {7},
+	Year = {2013}}
+
+@article{avants2011,
+	Abstract = {The United States National Institutes of Health (NIH) commit significant support to open-source data and software resources in order to foment reproducibility in the biomedical imaging sciences. Here, we report and evaluate a recent product of this commitment: Advanced Neuroimaging Tools (ANTs), which is approaching its 2.0 release. The ANTs open source software library consists of a suite of state-of-the-art image registration, segmentation and template building tools for quantitative morphometric analysis. In this work, we use ANTs to quantify, for the first time, the impact of similarity metrics on the affine and deformable components of a template-based normalization study. We detail the ANTs implementation of three similarity metrics: squared intensity difference, a new and faster cross-correlation, and voxel-wise mutual information. We then use two-fold cross-validation to compare their performance on openly available, manually labeled, T1-weighted MRI brain image data of 40 subjects (UCLA's LPBA40 dataset). We report evaluation results on cortical and whole brain labels for both the affine and deformable components of the registration. Results indicate that the best ANTs methods are competitive with existing brain extraction results (Jaccard=0.958) and cortical labeling approaches. Mutual information affine mapping combined with cross-correlation diffeomorphic mapping gave the best cortical labeling results (Jaccard=0.669$\pm$0.022). Furthermore, our two-fold cross-validation allows us to quantify the similarity of templates derived from different subgroups. Our open code, data and evaluation scripts set performance benchmark parameters for this state-of-the-art toolkit. This is the first study to use a consistent transformation framework to provide a reproducible evaluation of the isolated effect of the similarity metric on optimal template construction and brain labeling.},
+	Author = {Avants, Brian B and Tustison, Nicholas J and Song, Gang and Cook, Philip A and Klein, Arno and Gee, James C},
+	Date-Added = {2013-07-10 13:23:20 +0000},
+	Date-Modified = {2013-12-25 21:38:30 +0000},
+	Doi = {10.1016/j.neuroimage.2010.09.025},
+	Journal = {Neuroimage},
+	Journal-Full = {NeuroImage},
+	Mesh = {Algorithms; Brain; Databases, Factual; Diagnostic Imaging; Head; Humans; Image Processing, Computer-Assisted; Linear Models; Models, Anatomic; Models, Neurological; Population; Reproducibility of Results; Software},
+	Month = {Feb},
+	Number = {3},
+	Pages = {2033-44},
+	Pmc = {PMC3065962},
+	Pmid = {20851191},
+	Pst = {ppublish},
+	Title = {A reproducible evaluation of {ANTs} similarity metric performance in brain image registration},
+	Volume = {54},
+	Year = {2011},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1016/j.neuroimage.2010.09.025}}
+
+@article{avants2008,
+	Abstract = {One of the most challenging problems in modern neuroimaging is detailed characterization of neurodegeneration. Quantifying spatial and longitudinal atrophy patterns is an important component of this process. These spatiotemporal signals will aid in discriminating between related diseases, such as frontotemporal dementia (FTD) and Alzheimer's disease (AD), which manifest themselves in the same at-risk population. Here, we develop a novel symmetric image normalization method (SyN) for maximizing the cross-correlation within the space of diffeomorphic maps and provide the Euler-Lagrange equations necessary for this optimization. We then turn to a careful evaluation of our method. Our evaluation uses gold standard, human cortical segmentation to contrast SyN's performance with a related elastic method and with the standard ITK implementation of Thirion's Demons algorithm. The new method compares favorably with both approaches, in particular when the distance between the template brain and the target brain is large. We then report the correlation of volumes gained by algorithmic cortical labelings of FTD and control subjects with those gained by the manual rater. This comparison shows that, of the three methods tested, SyN's volume measurements are the most strongly correlated with volume measurements gained by expert labeling. This study indicates that SyN, with cross-correlation, is a reliable method for normalizing and making anatomical measurements in volumetric MRI of patients and at-risk elderly individuals.},
+	Author = {Avants, B B and Epstein, C L and Grossman, M and Gee, J C},
+	Date-Added = {2013-04-09 13:13:19 +0000},
+	Date-Modified = {2013-12-25 23:28:10 +0000},
+	Doi = {10.1016/j.media.2007.06.004},
+	Journal = {Med Image Anal},
+	Journal-Full = {Medical image analysis},
+	Mesh = {Algorithms; Atrophy; Cerebral Cortex; Dementia; Humans; Image Enhancement; Image Interpretation, Computer-Assisted; Magnetic Resonance Imaging},
+	Month = {Feb},
+	Number = {1},
+	Pages = {26-41},
+	Pmc = {PMC2276735},
+	Pmid = {17659998},
+	Pst = {ppublish},
+	Title = {Symmetric diffeomorphic image registration with cross-correlation: evaluating automated labeling of elderly and neurodegenerative brain},
+	Volume = {12},
+	Year = {2008},
+	Bdsk-Url-1 = {http://dx.doi.org/10.1016/j.media.2007.06.004}}

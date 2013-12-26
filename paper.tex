@@ -1,0 +1,235 @@
+% This is LLNCS.DEM the demonstration file of
+% the LaTeX macro package from Springer-Verlag
+% for Lecture Notes in Computer Science,
+% version 2.4 for LaTeX2e as of 16. April 2010
+%
+\documentclass{llncs}
+%
+\usepackage{makeidx}  % allows for indexgeneration
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{algorithmic,eqparbox,array}
+\usepackage{algorithm}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{multirow,booktabs,ctable,array}
+
+
+    \definecolor{listcomment}{rgb}{0.0,0.5,0.0}
+    \definecolor{listkeyword}{rgb}{0.0,0.0,0.5}
+    \definecolor{listnumbers}{gray}{0.65}
+    \definecolor{listlightgray}{gray}{0.955}
+    \definecolor{listwhite}{gray}{1.0}
+
+
+%\floatname{algorithm}{Procedure}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\renewcommand{\algorithmiccomment}[1]{\hfill\eqparbox{COMMENT}{// #1}}
+%
+\begin{document}
+%
+\frontmatter          % for the preliminaries
+%
+
+\mainmatter              % start of the contributions
+%
+\title{Two Greedy SyN Variants for Pulmonary Image Registration}
+
+\titlerunning{}  % abbreviated title (for running head)
+%                                     also used for the TOC unless
+%                                     \toctitle is used
+%
+\author{Nick Tustison\inst{1} \and Gang Song\inst{2} \and Jim Gee\inst{2} \and Brian Avants\inst{2}}
+
+\authorrunning{N. Tustison, G. Song, J. Gee, and B. Avants} % abbreviated author list (for running head)
+\institute{University of Virginia, Charlottesville VA 22903, USA\\
+\and
+University of Pennsylvania, Philadelphia PA  18104,USA
+}
+
+\maketitle              % typeset the title of the contribution
+
+\begin{abstract}
+We briefly describe two greedy SyN variants for CT lung image registration
+as applied to the EMPIRE10 data set which complements our previous 
+submission ``Lung CT Image Registration Using Diffeomorphic Transformation 
+Models.'' Whereas the previous submission explored diffeomorphic lung registration 
+using the {\tt ANTS} program off the Advanced Normalization Tools software 
+package, we look at registration performance of the well-performing greedy 
+SyN using the newly developed tool {\tt antsRegistration}.  In addition
+to the original SyN implementation which uses Gaussian regularization of the
+vector fields, we also assess performance of a new variant which uses B-splines
+for regularization.
+\keywords{ANTs, antsRegistration, B-splines, DMFFD, Regularization}
+\end{abstract}
+
+\section{Introduction}
+
+SyN, or Symmetric Normalization, was introduced in \cite{avants2008} (including
+a ``greedy'' version for tractable solutions to common image normalization 
+problems).  Follow-up work included a large-scale evaluation on brain T1-weighted
+MRI conducted in \cite{avants2011} and our original EMPIRE10 submission 
+\cite{song2010} which demonstrated good performance on lung CT.  Both these
+evaluations utilized the {\tt ANTS} program which comprises a core component
+of our open source Advanced Normalization Tools (ANTs).
+
+As part of the recent ITK%
+\footnote{
+http://www.itk.org
+}
+development efforts, the image registration framework was extended and 
+enhanced which included the development of several diffeomorphic transforms.
+To take advantage of this work, we introduced a new registration program 
+called {\tt antsRegistration} which is also offered with the ANTs package.  
+{\tt antsRegistration} offers a generic architecture for user-specific 
+image registration solutions permitting matching of various similarity metrics
+with a wide range of transform including the original greedy SyN transform.
+As a variant of the original SyN offering, we developed the so-called 
+``B-spline SyN'' transform which, differing from its Gaussian SyN analog,
+uses the B-spline basis functions for explicit regularization of the 
+vector fields.  Theoretical discussion and a large-scale comparative evaluation
+with the original SyN transform in the context of brain normalization are given 
+in \cite{tustison2013}.  
+
+In order to continue to make improvements, we applied {\tt antsRegistration} to
+the EMPIRE10 data using both SyN variants.  Additionally, to promote reproducibility, 
+we detail specific command line calls so that the interested user
+can reproduce the results submitted for evaluation. 
+
+\section{Methods}
+Preprocessing of both the moving and fixed images included the following steps:
+\begin{itemize}
+  \item mask out the lungs using the provided lung masks,
+  \item rescale image intensities within the lung masks to be between 0 and 1,
+  \item invert image intensities within the lung masks, and
+  \item pad images by 100 voxels at each dimension (50 at each face).
+\end{itemize}
+Following preprocessing, each image pair is registered as illustrated in 
+Listing 1.
+\vspace{2mm}
+\lstset{frame = htb,
+        framerule = 0.25pt,
+        float,
+        fontadjust,
+        backgroundcolor={\color{listlightgray}},
+        basicstyle = {\ttfamily\scriptsize},
+        keywordstyle = {\ttfamily\color{listkeyword}\textbf},
+        identifierstyle = {\ttfamily},
+        commentstyle = {\ttfamily\color{listcomment}\textit},
+        stringstyle = {\ttfamily},
+        showstringspaces = false,
+        showtabs = false
+        numbers = none,
+        numbersep = 6pt,
+        numberstyle={\ttfamily\color{listnumbers}},
+        tabsize = 2,
+        language=bash,
+        floatplacement=!h,
+        caption={Representative {\tt antsRegistration} call used for the EMPIRE10 evaluation},
+        captionpos=b,
+        label=listing:script
+        }
+\begin{lstlisting}
+# Register the $fixed and $moving images with initial alignment of the 
+# centers of intensity followed by the following three stages:
+#   rigid -> affine -> SyN (Original or B-spline)
+#
+# To make an original syn call, replace the option 
+#
+#    --transform BSplineSyN[0.1,40,0,3]
+#
+# with the option
+#
+#    --transform SyN[0.1,3,0]
+#
+# Output consists of the warped image (${prefix}Warped.nii.gz), linear
+# (${prefix}0GenericAffine.mat) and SyN (${prefix}1Warp.nii.gz) 
+# components of the final transform.
+#
+
+antsRegistration --dimensionality 3 \
+                 --output ${prefix} \
+                 --use-histogram-matching 1 \
+                 --initial-moving-transform [${fixed},${moving},1] \
+                 --transform Rigid[0.1] \
+                 --metric MI[${fixed},${moving},1,32,Regular,0.25] \ 
+                 --convergence 1000x500x250x100 \
+                 --smoothing-sigmas 3x2x1x0 \
+                 --shrink-factors 8x4x2x1 \
+                 --transform Affine[0.1] \
+                 --metric MI[${fixed},${moving},1,32,Regular,0.25] \ 
+                 --convergence 1000x500x250x100 \
+                 --smoothing-sigmas 3x2x1x0 \
+                 --shrink-factors 8x4x2x1 \
+                 --transform BSplineSyN[0.1,40,0,3] \
+                 --metric CC[${fixed},${moving},1,4] \ 
+                 --convergence 100x70x50x20 \
+                 --smoothing-sigmas 3x2x1x0 \
+                 --shrink-factors 6x4x2x1
+\end{lstlisting}
+
+These parameters are identical to the parameters used in the evaluation reported 
+in \cite{tustison2013} except for the B-spline knot distance which, instead of
+40 mm, was 26 mm for that study.  The brain study required less regularization due
+to the large deformation nature of the problem.   To make it easier for other to reproduce our results
+in the work, we wrote a well-documented shell script, {\tt antsRegistrationSyN.sh},%
+\footnote{
+https://github.com/stnava/ANTs/blob/master/Scripts/antsRegistrationSyN.sh
+} 
+employing these parameters which has demonstrated robust accuracy in a number of 
+brain data sets.  Due to its availability and previous vetting, we applied the
+same script to the EMPIRE10 data set with the only change being the B-spline SyN
+distance used.  
+
+{\tt antsRegistration} uses the concept of ``registration stages'' to string
+together transforms for normalization.  Each stage is characterized by the following:
+\begin{itemize}
+  \item fixed and moving images,
+  \item transform,
+  \item shrink factors (i.e. by what factor are the fixed and moving images downsampled
+  at each resolution level), 
+  \item smoothing factors (i.e. how much Gaussian smoothing is applied to each image 
+  at each resolution level),
+  \item similarity metric, and
+  \item convergence criteria (e.g. number of iterations per number of levels).
+\end{itemize}
+Note that different fixed and moving images can be specified for each stage and
+multiple metrics/image pairs can be specified for a single stage.
+
+With respect to the Listing 1---initially, the fixed and moving images
+are used to find the translation transform which aligns center of intensity 
+masses between the fixed and moving preprocessed images.  A rigid transform
+is then optimized (via gradient descent) using the mutual information metric 
+with four resolution levels followed by an affine transform with similar 
+parameter choices.  The final stage consists of the SyN or B-spline SyN 
+transform optimization using a local cross correlation metric with a radius of 
+4 pixels.  For comparison, in \cite{song2010} we used the same CC metric in
+the diffeomorphic registration with a radius of 2 and 5 multi-resolution levels.%
+\footnote{
+We should remind the reader that our related submission used the {\tt ANTS} program
+which does not have the developed notion of stages that {\tt antsRegistration} has. 
+In fact, the implementation can be quite different between the two programs which
+can be expected given the experience gained between the development of the former
+to the latter.
+}  
+
+All processing (preprocessing and image registration) was performed on the
+linux cluster at the University of Virginia.%
+\footnote{
+http://www.uvacse.virginia.edu
+} 
+Each processing job was assigned one node with single-threading.  Given the 
+relatively large image sizes (original size plus 100 voxels padding in 
+each dimension), the maximum memory requested for each job was 40 gb with 
+a maximal alloted time of 100 hours.  Note that times varied between 
+approximately 20 and 90 hours which was largely dependent on image size
+and algorithm.  For the image data sets reported in \cite{tustison2013}, 
+B-spline SyN took anywhere between 15 to 40 \% longer than Gaussian-based
+SyN.
+
+\bibliographystyle{splncs03}
+\bibliography{references}
+
+\end{document}
